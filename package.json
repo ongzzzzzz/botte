@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Fogeinator/botte#readme",
   "dependencies": {
-    "discord.js": "^12.4.1"
+    "discord.js": "^12.4.1",
+    "request": "^2.81.0"
   }
 }
