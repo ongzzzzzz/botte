@@ -19,15 +19,21 @@ client.on("message", function(message) {
 
     if (command === "ping") {
         const timeTaken = Date.now() - message.createdTimestamp;
-        message.channel.send(`Pong! This message had a latency of ${timeTaken}ms.`, {tts: args[0]==='tts'} );
+        message.channel.send(`Pong! This message had a latency of ${timeTaken}ms.`, {tts: args[-1]==='tts'} );
     }
     else if (command === "sum") {
         const numArgs = args.map(x => parseFloat(x));
         const sum = numArgs.reduce((counter, x) => counter += x);
-        message.channel.send(`The sum of all the arguments you provided is ${sum}!`, {tts: args[0]==='tts'} );
+        message.channel.send(`The sum of all the arguments you provided is ${sum}!`, {tts: args[-1]==='tts'} );
     }
     else if (command === "timetable"){
         message.channel.send("go to school kid");
+    }
+    else if (command === "count") {
+        let x = 0;
+        while(x < args[0]){
+            message.channel.send(x.toString(), {tts: args[-1]==='tts'});
+        }
     }
 
 
