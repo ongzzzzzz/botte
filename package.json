@@ -1,0 +1,22 @@
+{
+  "name": "botte",
+  "version": "1.0.0",
+  "description": "discord bot of fogeinator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fogeinator/botte.git"
+  },
+  "author": "Ong Zhi Zheng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fogeinator/botte/issues"
+  },
+  "homepage": "https://github.com/Fogeinator/botte#readme",
+  "dependencies": {
+    "discord.js": "^12.4.1"
+  }
+}
