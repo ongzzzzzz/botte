@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const config = require("./config.json");
+// const config = require("./config.json");
 const client = new Discord.Client();
 
 const prefix = "~~";
@@ -27,10 +27,10 @@ client.on("message", function(message) {
         message.channel.send(`The sum of all the arguments you provided is ${sum}!`);
     }
     else if (command === "timetable"){
-        message.channel.send();
+        message.channel.send("go to school kid");
     }
 
 
 });  
 
-client.login(config.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN);

@@ -1,10 +1,10 @@
 {
   "name": "botte",
   "version": "1.0.0",
-  "description": "discord bot of fogeinator",
+  "description": "ongzz's discord botte",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
