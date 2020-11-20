@@ -33,6 +33,7 @@ client.on("message", function(message) {
         let x = 0;
         while(x < args[0]){
             message.channel.send(x.toString(), {tts: args[-1]==='tts'});
+            sleep(1000);
         }
     }
 
@@ -40,3 +41,9 @@ client.on("message", function(message) {
 });  
 
 client.login(process.env.BOT_TOKEN);
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
