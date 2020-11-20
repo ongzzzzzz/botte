@@ -24,7 +24,7 @@ client.on("message", function(message) {
     else if (command === "sum") {
         const numArgs = args.map(x => parseFloat(x));
         const sum = numArgs.reduce((counter, x) => counter += x);
-        message.channel.send(`The sum of all the arguments you provided is ${sum}!`);
+        message.channel.send(`The sum of all the arguments you provided is ${sum}!`, {tts: args[0]==='tts'} );
     }
     else if (command === "timetable"){
         message.channel.send("go to school kid");
