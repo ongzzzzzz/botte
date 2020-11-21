@@ -13,8 +13,8 @@ const client = new Discord.Client();
 const prefix = "~~";
 const timetableUrl = {
 	"ERR": "https://i.giphy.com/media/8L0Pky6C83SzkzU55a/source.gif",
-	"F4M": "https://i.ibb.co/6Bg3F3n/f4mttb.png",
-	// "S1SH": "",
+	"F4M": "https://raw.githubusercontent.com/Fogeinator/botte/main/images/ttbs/f4m.png",
+	"S1SH": "https://raw.githubusercontent.com/Fogeinator/botte/main/images/ttbs/s1sh.png",
 };
 
 client.once("ready", () => {
