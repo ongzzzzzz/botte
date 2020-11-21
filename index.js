@@ -40,6 +40,8 @@ client.on("message", function(message) {
     const args = commandBody.split(' ');
     const command = args.shift().toLowerCase();
 
+
+
 	try{
 		if (command === "oi") {
 			//~~oi <tts>
@@ -50,9 +52,10 @@ client.on("message", function(message) {
 			);
 		}
 		else if (command === "sauce") {
+			//~~sauce
 			message.channel.send(
-				'a friend told me the sauce you wanted was here: https://github.com/Fogeinator/botte',
-				{tts: true}
+				'a friend told me the sauce was https://github.com/Fogeinator/botte ...',
+				{tts: args[args.length-1]==='tts'}
 			);
 		}
 		else if (command === "sum") {
@@ -151,6 +154,8 @@ client.on("message", function(message) {
 		console.error(err);
 		message.channel.send("im sry u say what idk pun")
 	}
+
+
 
 });  
 
