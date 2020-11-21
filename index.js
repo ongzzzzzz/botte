@@ -49,6 +49,12 @@ client.on("message", function(message) {
 				{tts: args[args.length-1]==='tts'} 
 			);
 		}
+		else if (command === "sauce") {
+			message.channel.send(
+				'a friend told me the sauce you wanted was here: https://github.com/Fogeinator/botte',
+				{tts: true}
+			);
+		}
 		else if (command === "sum") {
 			//~~sum [loads of numbers]
 			const numArgs = args.map(x => parseFloat(x));

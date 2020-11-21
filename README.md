@@ -6,6 +6,7 @@
 | cmds | desc |
 |------|------|
 | `~~oi <tts>` | ping to test uptime |
+| `~~sauce` | 😳 |
 | `~~sum [numbers]` | sum together the numbers u give it |
 | `~~count *number* <tts>` | counts from 0 to your number with tts option |
 | `~~rap <number>` | raps tss song, with length option |
