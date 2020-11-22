@@ -13,7 +13,7 @@ const Database = require("@replit/database");
 const db = new Database();
 
 
-const prefix = "~~";
+const prefix = "./";
 const timetableUrl = {
 	"ERR": "https://i.giphy.com/media/8L0Pky6C83SzkzU55a/source.gif",
 	"F4M": "https://raw.githubusercontent.com/Fogeinator/botte/main/images/ttbs/f4m.png",

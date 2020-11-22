@@ -2,7 +2,7 @@
 
 <img src="images/botte.png" width="100px" />
 
-## prefix: `~~`
+## prefix: `./`
 | cmds | desc |
 |------|------|
 | `~~oi <tts>` | ping to test uptime |
