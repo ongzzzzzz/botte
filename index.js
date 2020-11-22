@@ -58,6 +58,10 @@ client.on("message", function(message) {
 				{tts: args[args.length-1]==='tts'}
 			);
 		}
+		else if (command === "help") {
+			message.channel.send("ok kid i help u a bit", 
+			{files: [ "https://raw.githubusercontent.com/Fogeinator/botte/main/images/help.png" ]})
+		}
 		else if (command === "sum") {
 			//~~sum [loads of numbers]
 			const numArgs = args.map(x => parseFloat(x));
