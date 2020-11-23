@@ -23,6 +23,10 @@ const timetableUrl = {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+function isValidURL(string) {
+  var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+  return (res !== null)
+};
 
 
 client.once("ready", () => {
@@ -115,14 +119,14 @@ client.on("message", async function(message) {
 				let classss = args[1].toUpperCase();
 				let period = args[2].toUpperCase();
 				let zoomLink = args[3];
-				
-				(classss && period && zoomLink) ?
-				db.set(`${classss}_${period}`, `${zoomLink}`)
-				.then(() => message.channel.send(
-					`I saved <${zoomLink}> to ${classss}_${period}`
-				))
-				:
-				message.channel.send(`one of your params are missing, check again...`);
+
+				!classss ? message.channel.send("ur class cacat")
+				: !period ? message.channel.send("ur period cacat")
+					: !isValidURL(zoomLink) ? message.channel.send("ur link cacat")
+						: db.set(`${classss}_${period}`, `${zoomLink}`)
+							.then(() => message.channel.send(
+								`I saved <${zoomLink}> to ${classss}_${period}`
+							))
 			} 
 			else if (args[0] === "delete"){
 				//./link delete f4m bio
