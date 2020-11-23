@@ -19,20 +19,19 @@ const timetableUrl = {
 	"F4M": "https://raw.githubusercontent.com/Fogeinator/botte/main/images/ttbs/f4m.png",
 	"S1SH": "https://raw.githubusercontent.com/Fogeinator/botte/main/images/ttbs/s1sh.png",
 };
+
 function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
 client.once("ready", () => {
     console.log(`Logged in as ${client.user.tag}`);
-	client.user.setActivity("with your heart 👁👄👁", 
-	{ type: "PLAYING" });
+		client.user.setActivity("with your heart 👁👄👁", 
+		{ type: "PLAYING" });
 });
 
-client.on("message", function(message) { 
+client.on("message", async function(message) { 
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
@@ -44,7 +43,7 @@ client.on("message", function(message) {
 
 	try{
 		if (command === "oi") {
-			//~~oi <tts>
+			//./oi <tts>
 			const timeTaken = Date.now() - message.createdTimestamp;
 			message.channel.send(
 				`u oi me for what... i reply in ${timeTaken}ms.`, 
@@ -52,18 +51,18 @@ client.on("message", function(message) {
 			);
 		}
 		else if (command === "sauce") {
-			//~~sauce
+			//./sauce
 			message.channel.send(
-				'a friend told me the sauce was https://github.com/Fogeinator/botte ...',
+				'a friend told me the sauce was <https://github.com/Fogeinator/botte>...',
 				{tts: args[args.length-1]==='tts'}
 			);
 		}
 		else if (command === "help") {
 			message.channel.send("ok kid i help u a bit", 
-			{files: [ "https://raw.githubusercontent.com/Fogeinator/botte/main/images/help.png" ]})
+			{tts: args[args.length-1]==='tts', files: [ "https://raw.githubusercontent.com/Fogeinator/botte/main/images/help.png" ]})
 		}
 		else if (command === "sum") {
-			//~~sum [loads of numbers]
+			//./sum [loads of numbers]
 			const numArgs = args.map(x => parseFloat(x));
 			const sum = numArgs.reduce((counter, x) => counter += x);
 			isNaN(sum) ?
@@ -74,19 +73,19 @@ client.on("message", function(message) {
 			);
 		}
 		else if (command === "count") {
-			//~~count *num* <tts>
+			//./count *num* <tts>
 			let x = 0;
 			while(x <= args[0]){
 				message.channel.send(
 					x.toString(), 
 					{tts: args[args.length-1]==='tts'}
 				);
-				sleep(1000);
+				await sleep(1000);
 				x += 1;
 			}
 		}
 		else if (command === "rap") {
-			//~~rap <69>
+			//./rap <69>
 			let rap = "tsstsststsstssts ";
 			let ttsString = ""; 
 			if(!args[0]){
@@ -101,7 +100,7 @@ client.on("message", function(message) {
 			message.channel.send(ttsString, {tts: true});
 		}
 		else if (command === "ttb"){
-			//~~ttb f4m
+			//./ttb f4m
 			let ttbUrl = timetableUrl[args[0].toUpperCase()];
 			ttbUrl ? 
 			message.channel.send(`${args[0].toUpperCase()} timetable`, 
@@ -112,7 +111,7 @@ client.on("message", function(message) {
 		}
 		else if (command === "link"){
 			if(args[0] === "set"){
-				//~~link set f4m bio eaubaougboaegoaeoigbea
+				//./link set f4m bio eaubaougboaegoaeoigbea
 				let classss = args[1].toUpperCase();
 				let period = args[2].toUpperCase();
 				let zoomLink = args[3];
@@ -120,38 +119,66 @@ client.on("message", function(message) {
 				(classss && period && zoomLink) ?
 				db.set(`${classss}_${period}`, `${zoomLink}`)
 				.then(() => message.channel.send(
-					`I saved ${zoomLink} to ${classss}_${period}`
+					`I saved <${zoomLink}> to ${classss}_${period}`
 				))
 				:
 				message.channel.send(`one of your params are missing, check again...`);
 			} 
 			else if (args[0] === "delete"){
-				//~~link delete f4m bio
+				//./link delete f4m bio
 				let classss = args[1].toUpperCase();
 				let period = args[2].toUpperCase();
 
 				(classss && period) ?
-				db.delete(`${classss}_${period}`)
-				.then(() => message.channel.send(
-					`I just deleted ${classss}'s ${period} link... I hope you know what you're doing kiddo!`
-				))
+				db.get(`${classss}_${period}`).then(value => {
+					value ?
+					db.delete(`${classss}_${period}`)
+					.then(() => message.channel.send(
+						`I just deleted ${classss}'s ${period} link... I hope you know what you're doing kiddo!`
+					))
+					:
+					message.channel.send('u no set link u delete waht link la kid', {tts: true});
+				})
+				
 				:
 				message.channel.send(`one of your params are missing, check again...`);
+
+			}
+			else if (args[0] === "list"){
+				if(!args[1]){
+					message.channel.send("pls give class uwu (./link list <class>)")
+				} else {
+
+					db.list().then(keys => {
+						let classes = keys.filter(key => key.includes(args[1].toUpperCase()))
+						classes.forEach(classs => {
+							db.get(classs).then(link => {
+								message.channel.send(`${classs} => <${link}>`);
+							});
+						})
+					});
+					//play withi cron-schedule
+					//edit help.png
+				}
+				
 			}
 			else {
-				//~~link f4m bio
+				//./link f4m bio
 				let classss = args[0].toUpperCase();
 				let period = args[1].toUpperCase();
+				(classss && period) ?
 				db.get(`${classss}_${period}`).then(value => {
 					value ? 
 					message.channel.send(
-						`${classss} ${period} class link: ${value}`
+						`${classss} ${period} class link: <${value}>`
 					)
 					: 
 					message.channel.send(
-						`i think u not yet run: ~~link set ${args[0]} ${args[1]} <link>` 
+						`i think u not yet run: ./link set ${args[0]} ${args[1]} <link>` 
 					)
-				});
+				})
+				:
+				message.channel.send("say what la... give me ./link <class> <period>", {tts: true})
 			}
 		}
 	} catch (err) {
