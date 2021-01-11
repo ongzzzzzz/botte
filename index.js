@@ -11,6 +11,7 @@ const client = new Discord.Client();
 const Database = require("@replit/database");
 const db = new Database();
 const glob = require('glob');
+const fetch = require('node-fetch');
 
 
 const prefix = "./";
@@ -31,7 +32,7 @@ const commands = {
 
 const whiteList = ['botte', 'fogeinator'];
 
-const blackList = ['you just gonna ignite the light'];
+const blackList = [''];
 
 let chinaList = [];
 
@@ -57,6 +58,10 @@ function isValidURL(string) {
 function isValidIMG(url) {
   return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
 }
+function sleep(delay) {
+    var start = new Date().getTime();
+    while (new Date().getTime() < start + delay);
+}
 
 const numStrings = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
 
@@ -66,12 +71,24 @@ client.once("ready", () => {
 		{ type: "PLAYING" });
 });
 
-client.on("message", async function(message) { 
+client.on("message", async function(message) {
+	for (let embed of message.embeds) {
+		if(embed.description == 'Guess the pokémon and type `p!catch <pokémon>` to catch it!'){
+			url = embed.image.url
+			console.log(url)
+			let res = await fetch(`https://keraspokemon.fogeinator.repl.co/api/pokemon?url=${url}`);
+			let json = await res.json();
+			console.log(json)
+			message.channel.send(`hey kids that pokemon is ${json.pokemon} uwu`)
+		}
+		// console.log(embed)
+	}
+
   // if (message.author.bot) return;
 	if(message.content.toUpperCase().includes("HJONK HJONK") && hjonk){
 		message.channel.send("U HJONK WHAT LA U GOOSE");
 	}
-  if(toxicUsernameList.hasOwnProperty(message.author.username)){
+  	if(toxicUsernameList.hasOwnProperty(message.author.username)){
 		let toxictts = toxicUsernameList[message.author.username];
 
 		db.list("TOXIC").then(keys => {
@@ -528,8 +545,39 @@ client.on("message", async function(message) {
 			}
 			
 		}
-		//add toxic messages to replit db
-		//add embed
+
+		else if (command == "voice"){
+			const channel = client.channels.cache.get(args[0]);
+			if (!channel) return console.error("The channel does not exist!");
+			channel.join().then(connection => {
+				console.log("Successfully connected.");
+			}).catch(e => {
+				console.error(e);
+			});
+		}
+
+		else if (command == "leave"){
+			const lchannel = client.channels.cache.get(args[0]);
+			if (!lchannel) return console.error("The channel does not exist!");
+			lchannel.leave()
+		}
+
+		else if (command == "rejoin"){
+			const channel = client.channels.cache.get(args[0]);
+			if(!channel) message.channel.send('OI WHAT THE FUK IS THAT CHANNEL');
+			try{ channel.leave() } catch(e) {console.log('out d')}
+
+			for(let i = 1; i <= args[1]; i++){
+				message.channel.send(`${prefix}voice ${args[0]}`).then(msg => {
+					sleep(690);
+					msg.delete();
+				});
+				message.channel.send(`${prefix}leave ${args[0]}`).then(msg => {
+					sleep(690);
+					msg.delete();
+				});
+			}
+		}
  		//add pm
 
 	} catch (err) {
