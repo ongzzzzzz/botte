@@ -8,11 +8,13 @@ app.listen(port, () => console.log(`listening at http://localhost:${port}`));
 
 const Discord = require("discord.js");
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
 const Database = require("@replit/database");
 const db = new Database();
 const glob = require('glob');
 const fetch = require('node-fetch');
-
+const fs = require('fs');
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 const prefix = "./";
 const commands = {
@@ -48,22 +50,29 @@ let chinaList = [];
 let hjonk = 0;
 let toxicUsernameList = {};
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 function isValidURL(string) {
   var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
   return (res !== null)
 };
 function isValidIMG(url) {
-  return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+  return (url.match(/\.(jpeg|jpg|gif|png)/) != null);
 }
+
 function sleep(delay) {
     var start = new Date().getTime();
     while (new Date().getTime() < start + delay);
 }
 
 const numStrings = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+
+
+// const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+// for (const file of commandFiles) {
+// 	const command = require(`./commands/${file}`);
+// 	client.commands.set(command.name, command);
+// }
+
 
 client.once("ready", () => {
     console.log(`Logged in as ${client.user.tag}`);
@@ -76,15 +85,18 @@ client.on("message", async function(message) {
 		if(embed.description == 'Guess the pokémon and type `p!catch <pokémon>` to catch it!'){
 			url = embed.image.url
 			console.log(url)
-			let res = await fetch(`https://keraspokemon.fogeinator.repl.co/api/pokemon?url=${url}`);
-			let json = await res.json();
-			console.log(json)
-			message.channel.send(`hey kids that pokemon is ${json.pokemon} uwu`)
+			try{
+				let res = await fetch(`https://pokemon-flask-api.fogeinator.repl.co/api/pokemon?url=${url}`);
+				let json = await res.json();
+				console.log(json)
+				message.channel.send(`bitch that's a ${json.pokemon}`)
+			} catch (e){
+				// message.channel.send('sry guys my pokedex cacat for a while idk why')
+				console.error(e)
+			}
+			
 		}
-		// console.log(embed)
 	}
-
-  // if (message.author.bot) return;
 	if(message.content.toUpperCase().includes("HJONK HJONK") && hjonk){
 		message.channel.send("U HJONK WHAT LA U GOOSE");
 	}
@@ -117,6 +129,15 @@ client.on("message", async function(message) {
 
 	if (!message.content.startsWith(prefix)) return;
 
+	//https://discordjs.guide/command-handling/#dynamically-reading-command-files
+	// try {
+	// 	client.commands.get(command).execute(message, args);
+	// } catch (error) {
+	// 	console.error(error);
+	// 	message.reply('there was an error trying to execute that command!');
+	// }
+
+
 	try{
 		if (command === "oi") {
 			//./oi <tts>
@@ -136,10 +157,6 @@ client.on("message", async function(message) {
 		
 		else if (command === "help") {
 			let commandString = '"' + Object.keys(commands).join('", "') + '"';
-			// message.channel.send(`hey kid my commands got ${commandString}`, 
-			// {tts: args[args.length-1]==='tts', 
-			// files: [ "https://raw.githubusercontent.com/Fogeinator/botte/main/images/help.png" ]
-			// })
 			let arrOfObjs = Object.keys(commands).map(command => {
 				return {
 					name: command,
@@ -147,7 +164,6 @@ client.on("message", async function(message) {
 					inline: true
 				}
 			});
-			// console.log(arrOfObjs);
 			const helpEmbed = {
 				color: 0x0099ff,
 				title: 'Botte',
@@ -576,6 +592,28 @@ client.on("message", async function(message) {
 					sleep(690);
 					msg.delete();
 				});
+			}
+		}
+		else if (command == "pokemon"){
+			let msgImgUrl = message.attachments.size > 0 ? message.attachments.array()[0].url : null;
+
+			let link = null;
+
+			if (args[0]){
+				link = isValidIMG(args[0]) ? args[0] : null;
+			}
+
+			let realUrl = link ? link : msgImgUrl
+			console.log(realUrl)
+
+			if (!(msgImgUrl || link)){
+				message.channel.send(`bitch that's not an image`)
+				return
+			} else {
+				let res = await fetch(`https://pokemon-flask-api.fogeinator.repl.co/api/pokemon?url=${realUrl}`);
+				let json = await res.json();
+				console.log(json)
+				message.channel.send(`bitch that's a ${json.pokemon}`)
 			}
 		}
  		//add pm
