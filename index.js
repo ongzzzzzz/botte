@@ -1,3 +1,4 @@
+// https://discord.com/oauth2/authorize?client_id=779295427949625365&permissions=8&scope=bot
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -14,7 +15,9 @@ const db = new Database();
 const glob = require('glob');
 const fetch = require('node-fetch');
 const fs = require('fs');
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+const { emojify } = require('emojify-lyrics');
+const owoify = require('owoify-js').default
 
 const prefix = "./";
 const commands = {
@@ -32,7 +35,7 @@ const commands = {
 	'spell': '`'+prefix+'spell <message>` \n for kids v:three: (too long will fail)'
 };
 
-const whiteList = ['botte', 'fogeinator'];
+const whiteList = ['botte', 'fogeinator', 'Ong Zhi Zheng the birb', '╲⎝⧹fogeinator⧸⎠╱'];
 
 const blackList = [''];
 
@@ -64,6 +67,11 @@ function sleep(delay) {
 }
 
 const numStrings = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+
+
+const voiceContexts = {
+  'arabic_egypt': 'ar-eg', 'arabic_saudiarabia': 'ar-sa', 'bulgarian': 'bg-bg', 'catalan': 'ca-es', 'chinese_china': 'zh-cn', 'chinese_hongkong': 'zh-hk', 'chinese_taiwan': 'zh-tw', 'croatian': 'hr-hr', 'czech': 'cs-cz', 'danish': 'da-dk', 'dutch_belgium': 'nl-be', 'dutch_netherlands': 'nl-nl', 'english_australia': 'en-au', 'english_canada': 'en-ca', 'english_greatbritain': 'en-gb', 'english_india': 'en-in', 'english_ireland': 'en-ie', 'english_unitedstates': 'en-us', 'finnish': 'fi-fi', 'french_canada': 'fr-ca', 'french_france': 'fr-fr', 'french_switzerland': 'fr-ch', 'german_austria': 'de-at', 'german_germany': 'de-de', 'german_switzerland': 'de-ch', 'greek': 'el-gr', 'hebrew': 'he-il', 'hindi': 'hi-in', 'hungarian': 'hu-hu', 'indonesian': 'id-id', 'italian': 'it-it', 'japanese': 'ja-jp', 'korean': 'ko-kr', 'malay': 'ms-my', 'norwegian': 'nb-no', 'polish': 'pl-pl', 'portuguese_brazil': 'pt-br', 'portuguese_portugal': 'pt-pt', 'romanian': 'ro-ro', 'russian': 'ru-ru', 'slovak': 'sk-sk', 'slovenian': 'sl-si', 'spanish_mexico': 'es-mx', 'spanish_spain': 'es-es', 'swedish': 'sv-se', 'tamil': 'ta-in', 'thai': 'th-th', 'turkish': 'tr-tr', 'vietnamese': 'vi-vn'
+}
 
 
 // const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -210,14 +218,19 @@ client.on("message", async function(message) {
 		}
 		else if (command === "count") {
 			//./count *num* <tts>
-			let x = 0;
-			while(x <= args[0]){
-				message.channel.send(
-					x.toString(), 
-					{tts: args[args.length-1]==='tts'}
-				);
-				await sleep(1000);
-				x += 1;
+			if (args[0] > 69) {
+				message.reply('bro, not is i dw count, but is you counting too hiong d i lag')
+			}
+			else {
+				let x = 0;
+				while(x <= args[0]){
+					message.channel.send(
+						x.toString(), 
+						{tts: args[args.length-1]==='tts'}
+					);
+					await sleep(1000);
+					x += 1;
+				}
 			}
 		}
 		else if (command === "rap") {
@@ -335,13 +348,14 @@ client.on("message", async function(message) {
 				
 				if(args[0] && args[1]){
 
+
 					let classss = args[0].toUpperCase();
 					let period = args[1].toUpperCase();
 
 					db.get(`${classss}_${period}`, {raw: true}).then(value => {
 					value ? 
 						message.channel.send(
-							`${classss} ${period} class link: <${value}>`
+							`${classss} ${period} class link: <${value.slice(1, value.length-1)}>`
 						)
 						: 
 						message.channel.send(
@@ -610,11 +624,94 @@ client.on("message", async function(message) {
 				message.channel.send(`bitch that's not an image`)
 				return
 			} else {
-				let res = await fetch(`https://pokemon-flask-api.fogeinator.repl.co/api/pokemon?url=${realUrl}`);
-				let json = await res.json();
-				console.log(json)
-				message.channel.send(`bitch that's a ${json.pokemon}`)
+			
+				try{
+					let res = await fetch(`https://pokemon-flask-api.fogeinator.repl.co/api/pokemon?url=${realUrl}`);
+					let json = await res.json();
+					console.log(json)
+					message.channel.send(`bitch that's a ${json.pokemon}`)
+					return
+				} catch(e) {
+					message.reply('bro, my pokemon server down i lazy check. call <@486858222762983425> restart if u real wan')
+				}
+				
 			}
+		}
+		else if (command == "owoify"){
+			let owos = ['uwu', 'uvu', ''];
+			let randomOwo = owos[Math.floor(Math.random() * owos.length)];
+
+			let owo = randomOwo.length 
+				? owoify(args.join(' '), randomOwo) 
+				: owoify(args.join(' '));
+			console.log(owo);
+			console.log(randomOwo);
+
+			message.channel.send( owo );
+		}
+		else if (command == "emojify"){
+			let emo = emojify(args.join(' '));
+			console.log(emo);
+			message.channel.send( emo );
+		}
+		else if (command == "tell"){
+			if(args[0] === 'patterns'){
+				message.channel.send(`i talk can have a lot of pattern:\n${Object.keys(voiceContexts).join(', ')}`);
+				return
+			}else if(args[0] === 'speeds'){
+				message.channel.send(`i talk can slow speed (-10) and high speed (10), u choose`);
+				return;
+			}else if(args[0] === 'help'){
+				message.channel.send(`plz send ${prefix}tell <pattern> <speed> [msg], default pattern US girl and speed normal, but msg must send or else u gay`)
+				return
+			}
+
+			let channelId = args.shift();
+			const channel = client.channels.cache.get(channelId);
+
+			if (!channel) return message.reply("the channel does not exist!").then(() => console.error('no channel'));
+			
+			let langCtx = 'en-us';
+			if (voiceContexts.hasOwnProperty(args[0].toLowerCase())){
+				langCtx = voiceContexts[args[0].toLowerCase()];
+				args.shift();
+			}
+
+			let speed = 0;
+			if ( !isNaN( parseInt(args[0]) ) 
+				&& parseInt(args[0]) >= -10
+				&& parseInt(args[0]) <= 10
+			) {
+				speed = parseInt(args[0]) 
+				args.shift();
+			} 
+
+			let msg = args.join(' ');
+			if (args.length > 100) {
+				message.reply('bro, not is i dw help u tell. is ur message too long over 100 d.');
+				return
+			}
+
+			fetch(`https://api.voicerss.org/?key=${process.env.TTS_KEY}&src=${encodeURIComponent(msg)}&hl=${langCtx}&r=${speed}`)
+			.then(res => {
+				let dest = fs.createWriteStream('./tts.wav');
+				res.body.pipe(dest);
+			})
+			.then( async () => {
+				let connection = await channel.join();
+				let dispatcher = connection.play(fs.createReadStream('./tts.wav'));
+
+				dispatcher.on('error', console.error)
+
+				dispatcher.on('finish', () => {
+					message.channel.send(`${prefix}leave ${channelId}`).then(msg => {
+						sleep(690);
+						msg.delete();
+					});
+					fs.unlinkSync('./tts.wav');
+				})
+			})
+			// const dispatcher = connection.playStream(stream, streamOptions);
 		}
  		//add pm
 
