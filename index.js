@@ -348,9 +348,12 @@ client.on("message", async function(message) {
 
 				if (args[0] && args[1]) {
 
-
 					let classss = args[0].toUpperCase();
 					let period = args[1].toUpperCase();
+
+					// if (message.author.id == "576342939618246840" && classss == "F4M") {
+					// 	message.channel.send("weizen stop using f4m links pls the number 5 is literally just next to 4 like bro just press 5 instead of 4 pls")
+					// }
 
 					db.get(`${classss}_${period}`, { raw: true }).then(value => {
 						value ?
